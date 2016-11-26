@@ -7,36 +7,61 @@
 
 <script src="js/jquery.js"></script>
 
-<!-- <script src='http://maps.googleapis.com/maps/api/js?sensor=true'></script> -->
+<script src='http://maps.googleapis.com/maps/api/js?key=AIzaSyC2xa6RZ-wxCh6cbJLH8yvC0DUpb9lh-AM'></script>
 
 <script>
 	
 	x = navigator.geolocation;
 
-	x.getCurrentPosition(success, failure);
+	if(x) {
+		x.getCurrentPosition(function(position){
+			//get lat, long and accuracy
+			var mylat = position.coords.latitude;
+			var mylong = position.coords.longitude;
+			var accuracy = position.coords.accuracy;
+			
+			//google-api latlng string
+			var coords = new google.maps.LatLng(mylat, mylong);
 
-	function success(position) {
-		var mylat = position.coords.latitude;
-		var mylong = position.coords.longitude;
-		$('#lat').html("<p>Latitude: " + mylat + "</p>");
-		$('#long').html("<p>Longitude: " + mylong + "</p>");
+			//set up the map
+
+			var mapOptions = {
+				zoom: 16,
+				center: coords,
+				mapTypeControl: true,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			}
+
+			//draw the map
+
+			var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+			//add the marker
+
+			var marker = new google.maps.Marker({map: map, position: coords});
+		},function error(msg){alert('Please enable your GPS position future.');}, {maximumAge:600000, timeout:5000, enableHighAccuracy: true});
+	}else {
+    	alert("Geolocation API is not supported in your browser.");
 	}
-
-	function failure() {
-		$('body').append("<p>It didn't work, coordinates are not available!</p>");
-	}
-
 </script>
+
+<style>
+	body {
+		background: #444;
+	}
+
+	#map {
+		width: 70%;
+		margin: 0 auto;
+		height: 600px;
+	}
+
+</style>
 
 <body>
 
 	<div id="map">
 		
 	</div>
-
-	<div id="lat"></div>
-
-	<div id="long"></div>
-
 </body>
 </html>
