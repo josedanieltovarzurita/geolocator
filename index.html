@@ -10,38 +10,44 @@
 <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyC2xa6RZ-wxCh6cbJLH8yvC0DUpb9lh-AM'></script>
 
 <script>
-	
-	x = navigator.geolocation;
+	function getMyLocation() {
+		x = navigator.geolocation;
 
-	if(x) {
-		x.getCurrentPosition(function(position){
-			//get lat, long and accuracy
-			var mylat = position.coords.latitude;
-			var mylong = position.coords.longitude;
-			var accuracy = position.coords.accuracy;
-			
-			//google-api latlng string
-			var coords = new google.maps.LatLng(mylat, mylong);
+		if(x) {
 
-			//set up the map
+			//get rid off the btn
+			$("#signs").fadeOut();
+			$("#map").fadeIn();
 
-			var mapOptions = {
-				zoom: 16,
-				center: coords,
-				mapTypeControl: true,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			}
+			x.getCurrentPosition(function(position){
+				//get lat, long and accuracy
+				var mylat = position.coords.latitude;
+				var mylong = position.coords.longitude;
+				var accuracy = position.coords.accuracy;
+				
+				//google-api latlng string
+				var coords = new google.maps.LatLng(mylat, mylong);
 
-			//draw the map
+				//set up the map
 
-			var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+				var mapOptions = {
+					zoom: 16,
+					center: coords,
+					mapTypeControl: true,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				}
 
-			//add the marker
+				//draw the map
 
-			var marker = new google.maps.Marker({map: map, position: coords});
-		},function error(msg){alert('Please enable your GPS position future.');}, {maximumAge:600000, timeout:5000, enableHighAccuracy: true});
-	}else {
-    	alert("Geolocation API is not supported in your browser.");
+				var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+				//add the marker
+
+				var marker = new google.maps.Marker({map: map, position: coords});
+			},function error(msg){alert('Please enable your GPS position future.');}, {maximumAge:600000, timeout:5000, enableHighAccuracy: true});
+		}else {
+	    	alert("Geolocation API is not supported in your browser.");
+		}
 	}
 </script>
 
@@ -50,15 +56,28 @@
 		background: #444;
 	}
 
+	h1, p {
+		color: #ddd;
+	}
+
 	#map {
 		width: 70%;
 		margin: 0 auto;
 		height: 600px;
+		display: none;
+	}
+
+	#signs {
+		text-align: center;
 	}
 
 </style>
 
 <body>
+	<div id="signs">
+		<h1>Welcome to my Geolocator</h1>
+		<button onclick="getMyLocation()">Get My Address</button>
+	</div>
 
 	<div id="map">
 		
